@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📿 串珠計算器 Pro</title>
+  <style>
+    body {
+      font-family: "Microsoft JhengHei", sans-serif;
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 20px;
+      background: linear-gradient(135deg, #f0f4f8, #d9e4ec);
+      border-radius: 15px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+    .block {
+      background: #fff;
+      padding: 20px;
+      margin-bottom: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 0;
+      color: #0066cc;
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .result {
+      font-weight: bold;
+      margin-top: 15px;
+      font-size: 1.2em;
+      color: #d35400;
+    }
+    .unit-switch {
+      margin-top: 10px;
+      text-align: right;
+    }
+    .unit-switch label {
+      font-weight: normal;
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>📿 串珠計算器 Pro</h1>
+
+  <!-- 公式1：算珠數 -->
+  <div class="block">
+    <h2>1️⃣ 計算珠數</h2>
+    <label>手圍：
+      <input type="number" id="handCircum1" placeholder="輸入手圍">
+    </label>
+    <label>珠直徑：
+      <input type="number" id="beadDia1" placeholder="輸入珠直徑">
+    </label>
+    <div class="unit-switch">
+      <label>單位：</label>
+      <select id="unit1">
+        <option value="mm">毫米 (mm)</option>
+        <option value="cm">公分 (cm)</option>
+      </select>
+    </div>
+    <div class="result">串珠數量：<span id="beadCount">-</span></div>
+  </div>
+
+  <!-- 公式2：算手圍 -->
+  <div class="block">
+    <h2>2️⃣ 計算手圍</h2>
+    <label>珠數：
+      <input type="number" id="beadCount2" placeholder="輸入珠數">
+    </label>
+    <label>珠直徑：
+      <input type="number" id="beadDia2" placeholder="輸入珠直徑">
+    </label>
+    <div class="unit-switch">
+      <label>單位：</label>
+      <select id="unit2">
+        <option value="mm">毫米 (mm)</option>
+        <option value="cm">公分 (cm)</option>
+      </select>
+    </div>
+    <div class="result">手圍：<span id="handCircum">-</span></div>
+  </div>
+
+  <script>
+    // ✅ 公用函數：四捨五入到小數點兩位
+    function round(num) {
+      return Math.round(num * 100) / 100;
+    }
+
+    // ✅ 計算珠數
+    function calcBeadCount() {
+      const handCircum = parseFloat(document.getElementById("handCircum1").value);
+      const beadDia = parseFloat(document.getElementById("beadDia1").value);
+      const unit = document.getElementById("unit1").value;
+
+      if (handCircum > 0 && beadDia > 0) {
+        // 換算成 mm
+        const handMm = unit === "cm" ? handCircum * 10 : handCircum;
+        const diaMm = unit === "cm" ? beadDia * 10 : beadDia;
+        const count = handMm / diaMm + 3.14;
+        document.getElementById("beadCount").innerText = round(count);
+      } else {
+        document.getElementById("beadCount").innerText = "-";
+      }
+    }
+
+    // ✅ 計算手圍
+    function calcHandCircum() {
+      const beadCount = parseFloat(document.getElementById("beadCount2").value);
+      const beadDia = parseFloat(document.getElementById("beadDia2").value);
+      const unit = document.getElementById("unit2").value;
+
+      if (beadCount > 0 && beadDia > 0) {
+        // 換算成 mm
+        const diaMm = unit === "cm" ? beadDia * 10 : beadDia;
+        const circumMm = (beadCount - 3.14) * diaMm;
+
+        // 換算回顯示單位
+        const circum = unit === "cm" ? circumMm / 10 : circumMm;
+        document.getElementById("handCircum").innerText = round(circum);
+      } else {
+        document.getElementById("handCircum").innerText = "-";
+      }
+    }
+
+    // ✅ 綁定事件
+    document.getElementById("handCircum1").addEventListener("input", calcBeadCount);
+    document.getElementById("beadDia1").addEventListener("input", calcBeadCount);
+    document.getElementById("unit1").addEventListener("change", calcBeadCount);
+
+    document.getElementById("beadCount2").addEventListener("input", calcHandCircum);
+    document.getElementById("beadDia2").addEventListener("input", calcHandCircum);
+    document.getElementById("unit2").addEventListener("change", calcHandCircum);
+  </script>
+</body>
+</html>
