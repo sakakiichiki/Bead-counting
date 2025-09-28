@@ -3,122 +3,152 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>串珠計算器</title>
+  <title>串珠計算器 進階 V3</title>
   <style>
     body {
-      font-family: "Segoe UI", "微軟正黑體", sans-serif;
-      background: #f0f4f8;
+      font-family: "Segoe UI", sans-serif;
       margin: 0;
-      padding: 1rem;
-      display: flex;
-      justify-content: center;
-    }
-    .card {
-      background: #fff;
-      border-radius: 1rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      padding: 1.5rem;
-      max-width: 600px;
-      width: 100%;
-    }
-    h2 {
-      margin-top: 0;
-      text-align: center;
+      padding: 20px;
+      background: #f5f7fa;
       color: #333;
     }
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .card {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+    .field-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
     }
     .field {
-      display: flex;
-      flex-direction: column;
+      flex: 1;
+      min-width: 120px;
     }
     label {
-      font-size: 0.9rem;
-      margin-bottom: 0.3rem;
-      color: #444;
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
     }
     input, select {
-      padding: 0.6rem;
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
       border: 1px solid #ccc;
-      border-radius: 0.5rem;
       font-size: 1rem;
     }
     .result {
-      margin-top: 1.5rem;
-      padding: 1rem;
-      background: #f9fafb;
-      border: 1px dashed #aaa;
-      border-radius: 0.8rem;
-      font-size: 1.2rem;
+      margin-top: 20px;
       text-align: center;
-      word-wrap: break-word;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #0066cc;
     }
+
+    /* 響應式 */
     @media (max-width: 600px) {
-      .grid {
-        grid-template-columns: 1fr;
+      body {
+        padding: 10px;
+      }
+      .card {
+        padding: 15px;
+      }
+      h1 {
+        font-size: 1.4rem;
+      }
+      .result {
+        font-size: 1rem;
       }
     }
   </style>
 </head>
 <body>
+  <h1>串珠計算器</h1>
   <div class="card">
-    <h2>📿 串珠計算器</h2>
-    <div class="grid">
+    <div class="field-group">
       <div class="field">
-        <label>手圍長度</label>
-        <input type="number" id="hand" placeholder="輸入手圍">
+        <label>手圍</label>
+        <input type="number" id="hand" placeholder="輸入數值">
+      </div>
+      <div class="field">
+        <label>單位</label>
         <select id="handUnit">
           <option value="mm">mm</option>
           <option value="cm">cm</option>
         </select>
       </div>
+    </div>
+
+    <div class="field-group">
       <div class="field">
         <label>珠子直徑</label>
-        <input type="number" id="bead" placeholder="輸入直徑">
+        <input type="number" id="bead" placeholder="輸入數值">
+      </div>
+      <div class="field">
+        <label>單位</label>
         <select id="beadUnit">
           <option value="mm">mm</option>
           <option value="cm">cm</option>
         </select>
       </div>
     </div>
-    <div class="result" id="result">👉 請輸入數值</div>
+
+    <div class="field-group">
+      <div class="field">
+        <label>輸出單位</label>
+        <select id="outputUnit">
+          <option value="mm">mm</option>
+          <option value="cm">cm</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="result" id="result">請輸入數據進行計算</div>
   </div>
 
   <script>
-    const hand = document.getElementById("hand");
-    const bead = document.getElementById("bead");
-    const handUnit = document.getElementById("handUnit");
-    const beadUnit = document.getElementById("beadUnit");
-    const result = document.getElementById("result");
-
     function roundToHalf(num) {
-      return (Math.round(num * 2) / 2).toFixed(1).replace(/\.0$/, "");
+      return Math.round(num * 2) / 2;
     }
 
     function calculate() {
-      let handVal = parseFloat(hand.value);
-      let beadVal = parseFloat(bead.value);
-      if (isNaN(handVal) || isNaN(beadVal) || handVal <= 0 || beadVal <= 0) {
-        result.textContent = "👉 請輸入有效數值";
+      let hand = parseFloat(document.getElementById("hand").value) || 0;
+      let bead = parseFloat(document.getElementById("bead").value) || 0;
+      let handUnit = document.getElementById("handUnit").value;
+      let beadUnit = document.getElementById("beadUnit").value;
+      let outputUnit = document.getElementById("outputUnit").value;
+
+      if (handUnit === "cm") hand *= 10;
+      if (beadUnit === "cm") bead *= 10;
+
+      if (hand <= 0 || bead <= 0) {
+        document.getElementById("result").innerText = "請輸入有效數據";
         return;
       }
 
-      // 單位換算成 mm
-      if (handUnit.value === "cm") handVal *= 10;
-      if (beadUnit.value === "cm") beadVal *= 10;
+      let count = hand / bead;
+      let rounded = roundToHalf(count);
 
-      // 計算顆數
-      const count = handVal / beadVal;
-      result.textContent = `需要約 ${roundToHalf(count)} 顆珠子`;
+      if (outputUnit === "cm") {
+        document.getElementById("result").innerText = `需要約 ${rounded} 顆 （單位：cm 換算）`;
+      } else {
+        document.getElementById("result").innerText = `需要約 ${rounded} 顆 （單位：mm 換算）`;
+      }
     }
 
-    hand.addEventListener("input", calculate);
-    bead.addEventListener("input", calculate);
-    handUnit.addEventListener("change", calculate);
-    beadUnit.addEventListener("change", calculate);
+    document.querySelectorAll("input, select").forEach(el => {
+      el.addEventListener("input", calculate);
+      el.addEventListener("change", calculate);
+    });
   </script>
 </body>
 </html>
