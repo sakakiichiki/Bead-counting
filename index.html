@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>串珠計算器</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 20px;
+      background: #f5f5f5;
+      border-radius: 12px;
+    }
+    h2 { color: #333; }
+    .block {
+      background: #fff;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    label { display: block; margin-top: 8px; }
+    input {
+      width: 100%;
+      padding: 6px;
+      margin-top: 4px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .result {
+      font-weight: bold;
+      margin-top: 10px;
+      color: #0066cc;
+    }
+  </style>
+</head>
+<body>
+  <h1>📿 串珠計算器</h1>
+
+  <!-- 公式1：算珠數 -->
+  <div class="block">
+    <h2>1️⃣ 計算珠數</h2>
+    <label>手圍 (mm)：<input type="number" id="handCircum1" placeholder="輸入手圍"></label>
+    <label>珠直徑 (mm)：<input type="number" id="beadDia1" placeholder="輸入珠直徑"></label>
+    <div class="result">串珠數量：<span id="beadCount">-</span></div>
+  </div>
+
+  <!-- 公式2：算手圍 -->
+  <div class="block">
+    <h2>2️⃣ 計算手圍</h2>
+    <label>珠數：<input type="number" id="beadCount2" placeholder="輸入珠數"></label>
+    <label>珠直徑 (mm)：<input type="number" id="beadDia2" placeholder="輸入珠直徑"></label>
+    <div class="result">手圍：<span id="handCircum">-</span></div>
+  </div>
+
+  <script>
+    // 計算珠數
+    function calcBeadCount() {
+      const handCircum = parseFloat(document.getElementById("handCircum1").value);
+      const beadDia = parseFloat(document.getElementById("beadDia1").value);
+      if (handCircum > 0 && beadDia > 0) {
+        const count = handCircum / beadDia + 3.14;
+        document.getElementById("beadCount").innerText = count.toFixed(2);
+      } else {
+        document.getElementById("beadCount").innerText = "-";
+      }
+    }
+
+    // 計算手圍
+    function calcHandCircum() {
+      const beadCount = parseFloat(document.getElementById("beadCount2").value);
+      const beadDia = parseFloat(document.getElementById("beadDia2").value);
+      if (beadCount > 0 && beadDia > 0) {
+        const circum = (beadCount - 3.14) * beadDia;
+        document.getElementById("handCircum").innerText = circum.toFixed(2);
+      } else {
+        document.getElementById("handCircum").innerText = "-";
+      }
+    }
+
+    // 監聽輸入
+    document.getElementById("handCircum1").addEventListener("input", calcBeadCount);
+    document.getElementById("beadDia1").addEventListener("input", calcBeadCount);
+    document.getElementById("beadCount2").addEventListener("input", calcHandCircum);
+    document.getElementById("beadDia2").addEventListener("input", calcHandCircum);
+  </script>
+</body>
+</html>
